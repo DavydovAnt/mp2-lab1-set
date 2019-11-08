@@ -73,7 +73,13 @@ int TBitField::GetBit(const int n) const // получить значение б
 
 TBitField& TBitField::operator=(const TBitField &bf) // присваивание
 {
-	
+	delete[]pMem;
+	BitLen = bf.BitLen;
+	MemLen = bf.MemLen;
+	pMem = new TELEM[MemLen];
+	for (int i = 0; i < MemLen - 1; i++) {
+		pMem[i] = bf.pMem[i];
+	}
 }
 
 int TBitField::operator==(const TBitField &bf) const // сравнение
@@ -102,7 +108,26 @@ int TBitField::operator!=(const TBitField &bf) const // сравнение
 
 TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 {
-
+	int ost;
+	int maxBitLen;
+	if (BitLen > bf.BitLen) {
+		maxBitLen = BitLen;
+		ost = (bf.BitLen % 32) + 1;
+		ost = pow(2, (ost));
+		bf.pMem[MemLen] %= ost;
+	}
+	else
+	{
+		maxBitLen = bf.BitLen;
+		ost = (BitLen % 32) + 1;
+		ost = pow(2, (ost));
+		pMem[MemLen] %= ost;
+	}
+	TBitField temp(maxBitLen);
+	for (int i = 0; i < MemLen; i++) {
+		temp.pMem[i] = pMem[i] | bf.pMem[i];
+	}
+	return temp;
 }
 
 TBitField TBitField::operator&(const TBitField &bf) // операция "и"
@@ -142,6 +167,19 @@ TBitField TBitField::operator~(void) // отрицание
 
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
+	char c;
+	int k = 0;
+	do {
+		istr >> c;
+		if (c == '1') {
+			bf.SetBit(k);
+		}
+		if (c == '0') { 
+			bf.ClrBit(k);
+		}
+		k++;
+	} while ((c == '1') || (c == '0'));
+	return istr;
 }
 
 ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
