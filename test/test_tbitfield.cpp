@@ -256,7 +256,7 @@ TEST(TBitField, invert_plus_and_operator_on_different_size_bitfield)
   const int firstSze = 4, secondSize = 8;
   TBitField firstBf(firstSze), negFirstBf(firstSze), secondBf(secondSize), testBf(secondSize);
   // firstBf = 0001
-  firstBf.SetBit(0);
+  firstBf.SetBit(4);
   negFirstBf = ~firstBf;
   // negFirstBf = 1110
 
